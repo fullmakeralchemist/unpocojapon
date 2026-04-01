@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Un Poco Japon — Personal Shopper en Japón</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1a18;
+    --ink-mid: #4a4a45;
+    --ink-light: #8a8a82;
+    --paper: #faf9f6;
+    --paper-warm: #f3f1eb;
+    --paper-mid: #e8e5dc;
+    --red: #b5341a;
+    --red-light: #f9ece8;
+    --gold: #9a7b3a;
+    --gold-light: #f5f0e4;
+    --serif: 'Shippori Mincho', serif;
+    --sans: 'DM Sans', sans-serif;
+    --max: 900px;
+    --transition: 0.25s ease;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* HEADER */
+  header {
+    border-bottom: 1px solid var(--paper-mid);
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    background: rgba(250,249,246,0.95);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+  }
+  .header-inner {
+    max-width: var(--max);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+  .logo {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-kanji {
+    font-size: 18px;
+    color: var(--red);
+  }
+  nav { display: flex; gap: 2rem; }
+  nav a {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink-mid);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: color var(--transition);
+  }
+  nav a:hover { color: var(--ink); }
+
+  /* HERO */
+  .hero {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 7rem 2rem 5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+  .hero-tag {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--red);
+    font-weight: 400;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 500;
+    line-height: 1.25;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.01em;
+  }
+  .hero p {
+    color: var(--ink-mid);
+    font-size: 15px;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+  }
+  .btn-primary {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 12px 28px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    transition: background var(--transition);
+    cursor: pointer;
+    border: none;
+  }
+  .btn-primary:hover { background: var(--red); }
+
+  .hero-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hero-art {
+    width: 280px;
+    height: 340px;
+    border: 1px solid var(--paper-mid);
+    background: var(--paper-warm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-art::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 39px,
+      var(--paper-mid) 39px,
+      var(--paper-mid) 40px
+    );
+    opacity: 0.4;
+  }
+  .hero-art-kanji {
+    font-family: var(--serif);
+    font-size: 72px;
+    color: var(--ink);
+    opacity: 0.08;
+    position: absolute;
+    bottom: -10px;
+    right: 10px;
+    z-index: 0;
+  }
+  .hero-art-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+  .hero-art-content .big-kanji {
+    font-family: var(--serif);
+    font-size: 48px;
+    color: var(--red);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .hero-art-content p {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--ink-light);
+    text-transform: uppercase;
+  }
+
+  /* HOW IT WORKS */
+  .section {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 5rem 2rem;
+  }
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--red);
+    font-weight: 400;
+    margin-bottom: 0.75rem;
+  }
+  .section h2 {
+    font-family: var(--serif);
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 3rem;
+    letter-spacing: 0.01em;
+  }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .step {
+    background: var(--paper-warm);
+    padding: 2rem 1.5rem;
+    border-left: 1px solid var(--paper-mid);
+  }
+  .step:first-child { border-left: none; }
+  .step-num {
+    font-family: var(--serif);
+    font-size: 36px;
+    color: var(--paper-mid);
+    font-weight: 600;
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+  .step h3 {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.03em;
+  }
+  .step p {
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.7;
+  }
+
+  /* DIVIDER */
+  .divider {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 0 2rem;
+    border-top: 1px solid var(--paper-mid);
+  }
+
+  /* QUOTE FORM */
+  #presupuesto {
+    background: var(--paper-warm);
+    border-top: 1px solid var(--paper-mid);
+    border-bottom: 1px solid var(--paper-mid);
+    padding: 5rem 2rem;
+  }
+  .quote-inner {
+    max-width: var(--max);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 5rem;
+    align-items: start;
+  }
+  .quote-info { position: sticky; top: 96px; }
+  .quote-info h2 {
+    font-family: var(--serif);
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 1rem;
+    letter-spacing: 0.01em;
+  }
+  .quote-info p {
+    font-size: 14px;
+    color: var(--ink-mid);
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+  }
+  .fee-box {
+    background: var(--paper);
+    border: 1px solid var(--paper-mid);
+    padding: 1.25rem 1.5rem;
+  }
+  .fee-box h4 {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 1rem;
+    font-weight: 400;
+  }
+  .fee-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 13px;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--paper-warm);
+  }
+  .fee-row:last-child { border-bottom: none; }
+  .fee-row span:first-child { color: var(--ink-mid); }
+  .fee-row span:last-child { font-weight: 500; color: var(--ink); }
+
+  /* FORM */
+  .form-card {
+    background: var(--paper);
+    border: 1px solid var(--paper-mid);
+    padding: 2.5rem;
+  }
+  .items-list { margin-bottom: 1.5rem; }
+  .item-entry {
+    background: var(--paper-warm);
+    border: 1px solid var(--paper-mid);
+    padding: 1.5rem;
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .item-entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  .item-num {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    font-weight: 400;
+  }
+  .remove-btn {
+    background: none;
+    border: none;
+    color: var(--ink-light);
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    padding: 2px 6px;
+    transition: color var(--transition);
+  }
+  .remove-btn:hover { color: var(--red); }
+
+  .form-row { margin-bottom: 1rem; }
+  .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1rem; }
+  .form-row-3 { display: grid; grid-template-columns: 1.5fr 0.8fr 0.8fr; gap: 12px; margin-bottom: 1rem; }
+
+  label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    font-weight: 400;
+    margin-bottom: 6px;
+  }
+  input[type="text"],
+  input[type="number"],
+  input[type="url"],
+  select,
+  textarea {
+    width: 100%;
+    background: var(--paper);
+    border: 1px solid var(--paper-mid);
+    padding: 10px 12px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--ink);
+    outline: none;
+    transition: border-color var(--transition);
+    -webkit-appearance: none;
+    border-radius: 0;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--ink-mid);
+  }
+  textarea { resize: vertical; min-height: 80px; }
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a8a82' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+    cursor: pointer;
+  }
+
+  .add-item-btn {
+    width: 100%;
+    background: none;
+    border: 1px dashed var(--paper-mid);
+    padding: 12px;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--ink-mid);
+    cursor: pointer;
+    transition: all var(--transition);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.05em;
+  }
+  .add-item-btn:hover {
+    border-color: var(--ink-mid);
+    color: var(--ink);
+    background: var(--paper-warm);
+  }
+
+  /* CONTACT */
+  .contact-section {
+    border-top: 1px solid var(--paper-mid);
+    padding: 2rem 0 0;
+    margin-top: 1.5rem;
+  }
+  .contact-section h4 {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    font-weight: 400;
+    margin-bottom: 1rem;
+  }
+
+  /* SUMMARY */
+  .summary-section {
+    border-top: 1px solid var(--paper-mid);
+    padding: 1.5rem 0 0;
+    margin-top: 0.5rem;
+  }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 5px 0;
+    color: var(--ink-mid);
+  }
+  .summary-row.total {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    border-top: 1px solid var(--paper-mid);
+    margin-top: 8px;
+    padding-top: 12px;
+  }
+  .summary-row.total-mxn {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--gold);
+    margin-top: 4px;
+  }
+
+  /* SEND */
+  .submit-btn {
+    width: 100%;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 15px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: none;
+    transition: background var(--transition);
+    margin-top: 1.5rem;
+  }
+  .submit-btn:hover { background: var(--red); }
+
+  /* SUCCESS MSG */
+  .success-msg {
+    display: none;
+    background: var(--paper-warm);
+    border: 1px solid var(--paper-mid);
+    padding: 1.5rem;
+    text-align: center;
+    margin-top: 1rem;
+  }
+  .success-msg p { font-size: 14px; color: var(--ink-mid); }
+  .success-msg strong { color: var(--ink); }
+
+  /* FOOTER */
+  footer {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--paper-mid);
+  }
+  .footer-logo {
+    font-family: var(--serif);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  footer p {
+    font-size: 12px;
+    color: var(--ink-light);
+    letter-spacing: 0.04em;
+  }
+
+  /* RATE NOTICE */
+  .rate-notice {
+    font-size: 11px;
+    color: var(--ink-light);
+    margin-top: 6px;
+    letter-spacing: 0.02em;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    .hero { grid-template-columns: 1fr; gap: 3rem; }
+    .hero-visual { display: none; }
+    .steps { grid-template-columns: 1fr; }
+    .step { border-left: none; border-top: 1px solid var(--paper-mid); }
+    .quote-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+    .quote-info { position: static; }
+    .form-row-3 { grid-template-columns: 1fr 1fr; }
+    nav { display: none; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; }
+  }
+
+  /* ANIMATION */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero h1, .hero p, .hero .btn-primary, .hero-art {
+    animation: fadeUp 0.7s ease both;
+  }
+  .hero p { animation-delay: 0.1s; }
+  .hero .btn-primary { animation-delay: 0.2s; }
+  .hero-art { animation-delay: 0.25s; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <span class="logo-kanji">錦</span>
+      Un Poco Japon
+    </a>
+    <nav>
+      <a href="#como-funciona">¿Cómo funciona?</a>
+      <a href="#presupuesto">Presupuesto</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="section" style="padding-bottom: 3rem;">
+  <div class="hero" style="padding: 4rem 0 2rem;">
+    <div>
+      <p class="hero-tag">Personal Shopper · Japón</p>
+      <h1>Lo que quieras de Japón, directo a tus manos</h1>
+      <p>Compro por ti cualquier producto en Japón — electrónica, moda, coleccionables, cosméticos — y te lo envío a donde estés. Sin complicaciones, sin barreras del idioma.</p>
+      <a href="#presupuesto" class="btn-primary">Solicitar presupuesto</a>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-art">
+        <div class="hero-art-content">
+          <span class="big-kanji">買</span>
+          <p>Compras desde Japón</p>
+        </div>
+        <div class="hero-art-kanji">日本</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="como-funciona" class="section" style="padding-top: 2rem;">
+  <div class="divider" style="padding: 0; max-width: 100%;"></div>
+  <div style="max-width: var(--max); margin: 0 auto; padding: 4rem 0 2rem;">
+    <p class="section-label">El proceso</p>
+    <h2>Simple y transparente</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>Envía tu lista</h3>
+        <p>Comparte el artículo que deseas — link, descripción o nombre del producto — y cuántas unidades necesitas.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>Recibe tu presupuesto</h3>
+        <p>Te enviamos un desglose detallado con precio del producto, comisión de servicio y envío estimado en JPY y MXN.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>Confirmamos y enviamos</h3>
+        <p>Al aprobar el presupuesto, realizamos la compra y te mantenemos informado hasta que llegue a tus manos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE FORM -->
+<section id="presupuesto">
+  <div class="quote-inner">
+    <div class="quote-info">
+      <p class="section-label">Calculadora de costos</p>
+      <h2>¿Cuánto cuesta?</h2>
+      <p>Ingresa los artículos que deseas y calcula tu presupuesto al instante. Los precios se muestran en yenes japoneses (¥) y pesos mexicanos ($).</p>
+      <div class="fee-box">
+        <h4>Estructura de comisión</h4>
+        <div class="fee-row">
+          <span>Comisión de servicio</span>
+          <span>10% del subtotal</span>
+        </div>
+        <div class="fee-row">
+          <span>Tarifa por artículo</span>
+          <span>¥400 por pieza</span>
+        </div>
+        <div class="fee-row">
+          <span>Envío internacional</span>
+          <span>Se cotiza por separado</span>
+        </div>
+        <div class="fee-row">
+          <span>Tipo de cambio</span>
+          <span id="rate-display">Cargando...</span>
+        </div>
+        <p class="rate-notice">* El tipo de cambio es referencial. El precio final se confirma al momento del cobro.</p>
+      </div>
+    </div>
+
+    <div>
+      <div class="form-card">
+        <div class="items-list" id="items-list"></div>
+
+        <button class="add-item-btn" onclick="addItem()">+ Agregar otro artículo</button>
+
+        <!-- SUMMARY -->
+        <div class="summary-section" id="summary-section" style="display:none;">
+          <h4 style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-light);font-weight:400;margin-bottom:1rem;">Resumen del presupuesto</h4>
+          <div id="summary-rows"></div>
+        </div>
+
+        <!-- CONTACT -->
+        <div class="contact-section">
+          <h4>Tus datos de contacto</h4>
+          <div class="form-row-2">
+            <div class="form-row">
+              <label for="name">Nombre</label>
+              <input type="text" id="name" placeholder="Tu nombre">
+            </div>
+            <div class="form-row">
+              <label for="email">Correo electrónico</label>
+              <input type="text" id="email" placeholder="tu@correo.com">
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="whatsapp">WhatsApp (opcional)</label>
+            <input type="text" id="whatsapp" placeholder="+52 1 ...">
+          </div>
+        </div>
+
+        <button class="submit-btn" onclick="submitForm()">Enviar solicitud de presupuesto</button>
+
+        <div class="success-msg" id="success-msg">
+          <p><strong>¡Solicitud enviada!</strong><br>Revisaremos tu pedido y nos pondremos en contacto pronto.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">錦 Un Poco Japon</div>
+  <p>Personal Shopper en Japón · Hecho con cuidado</p>
+</footer>
+
+<script>
+  const COMMISSION = 0.10;
+  const FEE_PER_ITEM = 400;
+  let exchangeRate = 0.14; // fallback JPY to MXN
+
+  async function fetchRate() {
+    try {
+      const res = await fetch('https://open.er-api.com/v6/latest/JPY');
+      const data = await res.json();
+      if (data && data.rates && data.rates.MXN) {
+        exchangeRate = data.rates.MXN;
+        document.getElementById('rate-display').textContent =
+          '¥1 = $' + exchangeRate.toFixed(4) + ' MXN';
+      }
+    } catch(e) {
+      document.getElementById('rate-display').textContent = '~¥1 = $0.14 MXN (est.)';
+    }
+    recalculate();
+  }
+
+  let itemCount = 0;
+
+  function addItem() {
+    itemCount++;
+    const id = itemCount;
+    const list = document.getElementById('items-list');
+    const div = document.createElement('div');
+    div.className = 'item-entry';
+    div.id = 'item-' + id;
+    div.innerHTML = `
+      <div class="item-entry-header">
+        <span class="item-num">Artículo ${id}</span>
+        <button class="remove-btn" onclick="removeItem(${id})" title="Eliminar">×</button>
+      </div>
+      <div class="form-row">
+        <label>Nombre del artículo</label>
+        <input type="text" placeholder="Ej. Nintendo Switch OLED" oninput="recalculate()">
+      </div>
+      <div class="form-row">
+        <label>URL del producto (opcional)</label>
+        <input type="url" placeholder="https://www.amazon.co.jp/...">
+      </div>
+      <div class="form-row-3">
+        <div>
+          <label>Precio estimado (¥ JPY)</label>
+          <input type="number" min="0" placeholder="0" oninput="recalculate()" class="price-input" data-id="${id}">
+        </div>
+        <div>
+          <label>Cantidad</label>
+          <input type="number" min="1" value="1" oninput="recalculate()" class="qty-input" data-id="${id}">
+        </div>
+        <div>
+          <label>Envío preferido</label>
+          <select>
+            <option value="estandar">Estándar</option>
+            <option value="express">Express</option>
+            <option value="economico">Económico</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Notas / instrucciones especiales</label>
+        <textarea placeholder="Color, talla, versión, etc." rows="2"></textarea>
+      </div>
+    `;
+    list.appendChild(div);
+    recalculate();
+  }
+
+  function removeItem(id) {
+    const el = document.getElementById('item-' + id);
+    if (el) el.remove();
+    recalculate();
+  }
+
+  function recalculate() {
+    const priceInputs = document.querySelectorAll('.price-input');
+    const qtyInputs = document.querySelectorAll('.qty-input');
+
+    let subtotal = 0;
+    let totalQty = 0;
+    let hasItems = false;
+
+    priceInputs.forEach((inp) => {
+      const id = inp.dataset.id;
+      const price = parseFloat(inp.value) || 0;
+      const qtyEl = document.querySelector('.qty-input[data-id="' + id + '"]');
+      const qty = parseInt(qtyEl ? qtyEl.value : 1) || 1;
+      if (price > 0) hasItems = true;
+      subtotal += price * qty;
+      totalQty += qty;
+    });
+
+    const commission = subtotal * COMMISSION;
+    const itemFee = totalQty * FEE_PER_ITEM;
+    const total = subtotal + commission + itemFee;
+    const totalMXN = total * exchangeRate;
+
+    const section = document.getElementById('summary-section');
+    const rows = document.getElementById('summary-rows');
+
+    if (!hasItems || priceInputs.length === 0) {
+      section.style.display = 'none';
+      return;
+    }
+    section.style.display = 'block';
+
+    rows.innerHTML = `
+      <div class="summary-row"><span>Subtotal de artículos</span><span>¥${fmt(subtotal)}</span></div>
+      <div class="summary-row"><span>Comisión de servicio (10%)</span><span>¥${fmt(commission)}</span></div>
+      <div class="summary-row"><span>Tarifa por artículo (${totalQty} × ¥400)</span><span>¥${fmt(itemFee)}</span></div>
+      <div class="summary-row"><span>Envío internacional</span><span>Por cotizar</span></div>
+      <div class="summary-row total"><span>Total estimado</span><span>¥${fmt(total)} JPY</span></div>
+      <div class="summary-row total-mxn"><span>Equivalente aproximado</span><span>$${fmtMXN(totalMXN)} MXN</span></div>
+    `;
+  }
+
+  function fmt(n) {
+    return Math.round(n).toLocaleString('es-MX');
+  }
+  function fmtMXN(n) {
+    return n.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function submitForm() {
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    if (!name || !email) {
+      alert('Por favor ingresa tu nombre y correo electrónico.');
+      return;
+    }
+    const priceInputs = document.querySelectorAll('.price-input');
+    if (priceInputs.length === 0) {
+      alert('Agrega al menos un artículo a tu presupuesto.');
+      return;
+    }
+    document.getElementById('success-msg').style.display = 'block';
+    document.querySelector('.submit-btn').style.background = 'var(--ink-light)';
+    document.querySelector('.submit-btn').disabled = true;
+    window.scrollTo({ top: document.getElementById('success-msg').offsetTop - 100, behavior: 'smooth' });
+  }
+
+  // Init
+  fetchRate();
+  addItem();
+</script>
+</body>
+</html>
