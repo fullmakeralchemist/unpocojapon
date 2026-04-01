@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Un Poco Japon — Personal Shopper en Japón</title>
+<title>Un Poco Japón — Personal Shopper en Japón</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
@@ -511,6 +511,56 @@
     letter-spacing: 0.02em;
   }
 
+  /* PRESALE & CHECKBOX */
+  .presale-row { margin-top: 0.75rem; }
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--ink-mid);
+    user-select: none;
+  }
+  .checkbox-label input[type="checkbox"] { display: none; }
+  .checkbox-custom {
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--paper-mid);
+    background: var(--paper);
+    flex-shrink: 0;
+    position: relative;
+    transition: all var(--transition);
+  }
+  .checkbox-label input:checked ~ .checkbox-custom {
+    background: var(--ink);
+    border-color: var(--ink);
+  }
+  .checkbox-label input:checked ~ .checkbox-custom::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 1px;
+    width: 5px;
+    height: 9px;
+    border: 1.5px solid var(--paper);
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg);
+  }
+  .checkbox-text strong { font-weight: 500; color: var(--ink); }
+  .presale-notice {
+    margin-top: 8px;
+    background: var(--gold-light);
+    border: 1px solid #e0d4b0;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--gold);
+    gap: 8px;
+    align-items: flex-start;
+    line-height: 1.5;
+  }
+
   /* RESPONSIVE */
   @media (max-width: 700px) {
     .hero { grid-template-columns: 1fr; gap: 3rem; }
@@ -544,7 +594,7 @@
   <div class="header-inner">
     <a href="#" class="logo">
       <span class="logo-kanji">錦</span>
-      Un Poco Japon
+      Un Poco Japón
     </a>
     <nav>
       <a href="#como-funciona">¿Cómo funciona?</a>
@@ -672,7 +722,7 @@
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">錦 Un Poco Japon</div>
+  <div class="footer-logo">錦 Un Poco Japón</div>
   <p>Personal Shopper en Japón · Hecho con cuidado</p>
 </footer>
 
@@ -712,11 +762,11 @@
       </div>
       <div class="form-row">
         <label>Nombre del artículo</label>
-        <input type="text" placeholder="Ej. Nintendo Switch OLED" oninput="recalculate()">
+        <input type="text" placeholder="Ej. Nintendo Switch OLED" oninput="recalculate()" class="name-input" data-id="${id}">
       </div>
       <div class="form-row">
         <label>URL del producto (opcional)</label>
-        <input type="url" placeholder="https://www.amazon.co.jp/...">
+        <input type="url" placeholder="https://www.amazon.co.jp/..." class="url-input" data-id="${id}">
       </div>
       <div class="form-row-3">
         <div>
@@ -728,21 +778,36 @@
           <input type="number" min="1" value="1" oninput="recalculate()" class="qty-input" data-id="${id}">
         </div>
         <div>
-          <label>Envío preferido</label>
-          <select>
-            <option value="estandar">Estándar</option>
-            <option value="express">Express</option>
-            <option value="economico">Económico</option>
-          </select>
+          <label>Talla / Tamaño</label>
+          <input type="text" placeholder="Ej. M, L, 27cm..." class="size-input" data-id="${id}">
         </div>
       </div>
       <div class="form-row">
+        <label>Color</label>
+        <input type="text" placeholder="Ej. Negro, Blanco perla, Azul marino..." class="color-input" data-id="${id}">
+      </div>
+      <div class="presale-row">
+        <label class="checkbox-label">
+          <input type="checkbox" class="presale-input" data-id="${id}" onchange="togglePresale(this, ${id})">
+          <span class="checkbox-custom"></span>
+          <span class="checkbox-text">Este es un artículo en <strong>preventa</strong> (aún no disponible)</span>
+        </label>
+        <div class="presale-notice" id="presale-notice-${id}" style="display:none;">
+          <span>⚠</span> Los artículos en preventa pueden tener tiempos de espera adicionales. Te avisaremos cuando esté disponible.
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:1rem;">
         <label>Notas / instrucciones especiales</label>
-        <textarea placeholder="Color, talla, versión, etc." rows="2"></textarea>
+        <textarea placeholder="Versión, variante, regalo, etc." rows="2" class="notes-input" data-id="${id}"></textarea>
       </div>
     `;
     list.appendChild(div);
     recalculate();
+  }
+
+  function togglePresale(checkbox, id) {
+    const notice = document.getElementById('presale-notice-' + id);
+    notice.style.display = checkbox.checked ? 'flex' : 'none';
   }
 
   function removeItem(id) {
@@ -800,22 +865,88 @@
     return n.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
-  function submitForm() {
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
+  function buildEmailBody() {
+    const priceInputs = document.querySelectorAll('.price-input');
+    let lines = [];
+    priceInputs.forEach((inp) => {
+      const id = inp.dataset.id;
+      const name = document.querySelector('.name-input[data-id="'+id+'"]')?.value || '—';
+      const url  = document.querySelector('.url-input[data-id="'+id+'"]')?.value || '—';
+      const price = parseFloat(inp.value) || 0;
+      const qty   = parseInt(document.querySelector('.qty-input[data-id="'+id+'"]')?.value) || 1;
+      const size  = document.querySelector('.size-input[data-id="'+id+'"]')?.value || '—';
+      const color = document.querySelector('.color-input[data-id="'+id+'"]')?.value || '—';
+      const presale = document.querySelector('.presale-input[data-id="'+id+'"]')?.checked ? 'Sí (preventa)' : 'No';
+      const notes = document.querySelector('.notes-input[data-id="'+id+'"]')?.value || '—';
+      lines.push(
+        `Artículo: ${name}\nURL: ${url}\nPrecio: ¥${price.toLocaleString()} JPY\nCantidad: ${qty}\nTalla: ${size}\nColor: ${color}\nPreventa: ${presale}\nNotas: ${notes}\n---`
+      );
+    });
+
+    const priceEls = document.querySelectorAll('.price-input');
+    let subtotal = 0, totalQty = 0;
+    priceEls.forEach(inp => {
+      const id = inp.dataset.id;
+      const price = parseFloat(inp.value) || 0;
+      const qty = parseInt(document.querySelector('.qty-input[data-id="'+id+'"]')?.value) || 1;
+      subtotal += price * qty;
+      totalQty += qty;
+    });
+    const commission = subtotal * COMMISSION;
+    const itemFee = totalQty * FEE_PER_ITEM;
+    const total = subtotal + commission + itemFee;
+    const totalMXN = total * exchangeRate;
+
+    return lines.join('\n') +
+      `\n\nRESUMEN\nSubtotal: ¥${Math.round(subtotal).toLocaleString()}\nComisión (10%): ¥${Math.round(commission).toLocaleString()}\nTarifa artículos: ¥${Math.round(itemFee).toLocaleString()}\nTOTAL: ¥${Math.round(total).toLocaleString()} (~$${totalMXN.toLocaleString('es-MX',{minimumFractionDigits:2})} MXN)`;
+  }
+
+  async function submitForm() {
+    const name     = document.getElementById('name').value.trim();
+    const email    = document.getElementById('email').value.trim();
+    const whatsapp = document.getElementById('whatsapp').value.trim();
+    const priceInputs = document.querySelectorAll('.price-input');
+
     if (!name || !email) {
       alert('Por favor ingresa tu nombre y correo electrónico.');
       return;
     }
-    const priceInputs = document.querySelectorAll('.price-input');
     if (priceInputs.length === 0) {
       alert('Agrega al menos un artículo a tu presupuesto.');
       return;
     }
-    document.getElementById('success-msg').style.display = 'block';
-    document.querySelector('.submit-btn').style.background = 'var(--ink-light)';
-    document.querySelector('.submit-btn').disabled = true;
-    window.scrollTo({ top: document.getElementById('success-msg').offsetTop - 100, behavior: 'smooth' });
+
+    const btn = document.querySelector('.submit-btn');
+    btn.textContent = 'Enviando...';
+    btn.disabled = true;
+
+    // ⚠️ REEMPLAZA con tu endpoint de Formspree: https://formspree.io/f/XXXXXXXX
+    const FORMSPREE_URL = 'https://formspree.io/f/REEMPLAZA_AQUI';
+
+    try {
+      const res = await fetch(FORMSPREE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          nombre: name,
+          email: email,
+          whatsapp: whatsapp || 'No proporcionado',
+          pedido: buildEmailBody()
+        })
+      });
+
+      if (res.ok) {
+        document.getElementById('success-msg').style.display = 'block';
+        btn.style.background = 'var(--ink-light)';
+        btn.textContent = 'Solicitud enviada';
+      } else {
+        throw new Error('Error en el servidor');
+      }
+    } catch(e) {
+      btn.textContent = 'Enviar solicitud de presupuesto';
+      btn.disabled = false;
+      alert('Hubo un problema al enviar. Verifica que hayas configurado tu Formspree URL (ver instrucciones en el código).');
+    }
   }
 
   // Init
